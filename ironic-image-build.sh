@@ -60,8 +60,8 @@ check_packages() {
 check_packages
 
 # Get user inputs
-read -rp "Enter Distribution Release (default: centos9): " DIS
-DIS=${DIS:-centos9}
+read -rp "Enter Distribution Release (default: focal): " DIS
+DIS=${DIS:-focal}
 
 read -rp "Enter Virtual Environment Directory (default: $(pwd)/image-builder): " VENV_DIR
 VENV_DIR=${VENV_DIR:-$(pwd)/image-builder}
@@ -93,6 +93,7 @@ log "Installing diskimage-builder ($DIB_VERSION) and ironic-python-agent-builder
 "$VENV_DIR/bin/pip" install --upgrade pip setuptools wheel --isolated
 "$VENV_DIR/bin/pip" install "diskimage-builder==$DIB_VERSION" "ironic-python-agent-builder==$IPA_BUILDER_VERSION" --isolated || error_exit "Package installation failed"
 
+echo  # New line for clarity
 # Activate virtual environment
 source "$VENV_DIR/bin/activate"
 
@@ -103,6 +104,7 @@ export DIB_DEV_USER_USERNAME=devuser
 export DIB_DEV_USER_PWDLESS_SUDO=yes
 export DIB_DEV_USER_PASSWORD="$DIB_DEV_USER_PASSWORD"
 
+echo  # New line for clarity
 read -rp "Enter Ironic Python Agent Branch (default: unmaintained/victoria): " DIB_REPOREF_ironic_python_agent
 DIB_REPOREF_ironic_python_agent=${DIB_REPOREF_ironic_python_agent:-unmaintained/victoria}
 
