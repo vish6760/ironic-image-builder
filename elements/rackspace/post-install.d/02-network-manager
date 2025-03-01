@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# Enable debugging mode based on a condition
+# ✅ Enable debugging mode based on a condition
 if [ 0 -gt 0 ]; then
     set -x
 else
     set -v
 fi
 
-# Ensure the script exits on error
+# ✅ Ensure the script exits on error
 set -eu
 set -o pipefail
 
@@ -24,7 +24,7 @@ if [ $isRH -eq 1 ]; then
   #snap install netplan --edge --classic
   #snap list
 
-  # DHCP is default IP method
+# ✅ DHCP is default IP method
 cat << _EM1 > /etc/sysconfig/network-scripts/ifcfg-eno1
 TYPE=Ethernet
 BOOTPROTO=dhcp

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# ✅ Enable debugging mode based on a condition
 if [ 0 -gt 0 ]; then
     set -x
 else
@@ -12,7 +13,7 @@ set -o pipefail
 echo "${DISTRO_NAME}"
 echo "${DIB_RELEASE}"
 
-# Fix cloud-init for centos 9
+# ✅ Fix cloud-init for centos 9
 if [ "${DISTRO_NAME}" != "centos" ]; then
   exit 0
 elif [ "${DIB_RELEASE}" -ne "9-stream" ]; then
@@ -20,7 +21,7 @@ elif [ "${DIB_RELEASE}" -ne "9-stream" ]; then
 fi
 
 
-# Fix bad cloud-init unit files when present
+# ✅ Fix bad cloud-init unit files when present
 test -d /etc/systemd/system/cloud-init.target.wants && fixSystemdScripts=1 || fixSystemdScripts=0
 
 if [ $fixSystemdScripts -eq 1 ]; then
@@ -28,8 +29,8 @@ if [ $fixSystemdScripts -eq 1 ]; then
   rm -rf /etc/systemd/system/cloud-init.target.wants
 fi
 
-# Turn off script EC2 datasource compatibility checking
-# See https://bugs.launchpad.net/cloud-init/+bug/1660385
+# ✅ Turn off script EC2 datasource compatibility checking
+# ✅ See https://bugs.launchpad.net/cloud-init/+bug/1660385
 cat << EOT > /etc/cloud/cloud.cfg.d/99-ec2-datasource.cfg
 #cloud-config
  datasource:
@@ -43,7 +44,7 @@ cat << EOT > /etc/cloud/cloud.cfg.d/99-warnings.cfg
    dsid_missing_source: off
 EOT
 
-# Configure only suported datasources
+# ✅ Configure only suported datasources
 cat << EOT > /etc/cloud/cloud.cfg.d/99-datasource.cfg
 #cloud-config
   datasources_list:

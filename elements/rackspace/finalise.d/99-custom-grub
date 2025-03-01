@@ -1,17 +1,17 @@
 #!/bin/bash
 
-# Enable debugging mode based on a condition
+# ✅ Enable debugging mode based on a condition
 if [ 0 -gt 0 ]; then
     set -x
 else
     set -v
 fi
 
-# Ensure the script exits on error
+# ✅ Ensure the script exits on error
 set -eu
 set -o pipefail
 
-# Determine if the OS is RedHat-based (CentOS)
+# ✅ Determine if the OS is RedHat-based (CentOS)
 isRH=0
 if [[ -f /etc/redhat-release ]]; then
     grep -Ei 'CentOS|Red Hat' /etc/redhat-release &>/dev/null && isRH=1
@@ -19,14 +19,14 @@ elif [[ -f /etc/os-release ]]; then
     grep -Ei 'CentOS|Red Hat' /etc/os-release &>/dev/null && isRH=1
 fi
 
-# Set bootloader parameters based on OS type
+# ✅ Set bootloader parameters based on OS type
 if [ $isRH -eq 1 ]; then
     export DIB_BOOTLOADER_DEFAULT_CMDLINE="nomodeset console=ttyS1,115200n8 audit=1 audit_backlog_limit=8192 rd.debug=1 rd.auto=1 net.ifnames=0 biosdevname=0"
 else
     export DIB_BOOTLOADER_DEFAULT_CMDLINE="nomodeset console=ttyS1,115200n8 audit=1 audit_backlog_limit=8192 net.ifnames=0 biosdevname=0"
 fi
 
-# Apply the bootloader changes to /etc/default/grub
+# ✅ Apply the bootloader changes to /etc/default/grub
 echo "DIB_BOOTLOADER_DEFAULT_CMDLINE: $DIB_BOOTLOADER_DEFAULT_CMDLINE"
 
 if [ $isRH -eq 1 ]; then

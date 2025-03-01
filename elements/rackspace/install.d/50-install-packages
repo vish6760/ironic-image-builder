@@ -1,5 +1,14 @@
 #!/bin/bash
-set -eux
+
+# ✅ Enable debugging mode based on a condition
+if [ 0 -gt 0 ]; then
+    set -x
+else
+    set -v
+fi
+
+set -eu
+set -o pipefail
 
 if [[ "\$DISTRO_NAME" == "ubuntu" ]]; then
     apt update
