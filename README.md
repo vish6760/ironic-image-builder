@@ -45,8 +45,8 @@ Before running the script, install the necessary dependencies:
 
 ### 1️⃣ **Clone the Repository**
 ```bash
-git clone https://github.com/your-username/image-builder.git
-cd image-builder
+https://github.com/vish6760/ironic-image-builder.git /opt/ironic-image-builder
+cd ironic-image-builder
 ```
 
 ### 2️⃣ **Install Dependencies**
