@@ -97,7 +97,7 @@ log "Installing diskimage-builder ($DIB_VERSION) and ironic-python-agent-builder
 source "$VENV_DIR/bin/activate"
 
 # Set Environment Variables
-CUSTOM_ELEMENTS="$(pwd)/elements"
+CUSTOM_ELEMENTS="$(pwd)/dib-elements"
 export ELEMENTS_PATH="${ELEMENTS_PATH:-$CUSTOM_ELEMENTS}"
 export DIB_DEV_USER_USERNAME=devuser
 export DIB_DEV_USER_PWDLESS_SUDO=yes
@@ -136,7 +136,7 @@ disk-image-create $DISTRO_NAME \
   baremetal \
   grub2 \
   devuser \
-  rackspace -o "${OUTPUT_DIR}/${IMG_NAME}" 2>&1 | tee -a "$LOG_FILE"
+  my-custom-element -o "${OUTPUT_DIR}/${IMG_NAME}" 2>&1 | tee -a "$LOG_FILE"
 
 # Check if image creation succeeded
 if [ $? -ne 0 ]; then
