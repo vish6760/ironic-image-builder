@@ -43,7 +43,7 @@ Before running the script, install the necessary dependencies:
 
 ### **This IPA image build process has been tested on an Ubuntu 20.04 virtual machine, but you are welcome to test it on other distributions as well. **
 
-### 1️⃣ **Clone the Repository
+### 1️⃣ **Clone the Repository**
 ```bash
 git clone https://github.com/your-username/image-builder.git
 cd image-builder
