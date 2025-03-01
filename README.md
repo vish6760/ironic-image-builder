@@ -98,7 +98,3 @@ openstack image create "Custom my-custom-element Image" \
 | `pkg-map`           | Maps packages across different distributions |
 
 
-## 📧 Support & Contributions
-Feel free to submit **issues** or **pull requests** if you encounter problems or want to contribute!
-
-
