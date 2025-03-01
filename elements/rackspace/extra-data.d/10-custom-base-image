@@ -1,0 +1,13 @@
+#!/bin/bash
+#set -eu
+#set -o pipefail
+
+#export BASE_IMAGE_URL="http://your-custom-server.com/path/to/custom-image.qcow2"
+#export IMAGE_LOCATION="/var/tmp/custom-image.qcow2"
+
+# Ensure the image is downloaded if it doesn't exist
+#if [ ! -f "$IMAGE_LOCATION" ]; then
+#    echo "Downloading base image..."
+#    curl -o "$IMAGE_LOCATION" "$BASE_IMAGE_URL"
+#fi
+
