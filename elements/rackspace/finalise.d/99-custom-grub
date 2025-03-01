@@ -21,9 +21,9 @@ fi
 
 # Set bootloader parameters based on OS type
 if [ $isRH -eq 1 ]; then
-    export DIB_BOOTLOADER_DEFAULT_CMDLINE="rdblacklist=bfa,lpfc nomodeset console=tty0 console=ttyS1,115200n8 audit=1 audit_backlog_limit=8192 rd.shell=0 rd.debug=0 rd.auto=1 net.ifnames=0 biosdevname=0"
+    export DIB_BOOTLOADER_DEFAULT_CMDLINE="nomodeset console=ttyS1,115200n8 audit=1 audit_backlog_limit=8192 rd.debug=1 rd.auto=1 net.ifnames=0 biosdevname=0"
 else
-    export DIB_BOOTLOADER_DEFAULT_CMDLINE="modprobe.blacklist=bfa,lpfc nomodeset console=tty0 console=ttyS1,115200n8 audit=1 audit_backlog_limit=8192 net.ifnames=0 biosdevname=0"
+    export DIB_BOOTLOADER_DEFAULT_CMDLINE="nomodeset console=ttyS1,115200n8 audit=1 audit_backlog_limit=8192 net.ifnames=0 biosdevname=0"
 fi
 
 # Apply the bootloader changes to /etc/default/grub
@@ -31,14 +31,14 @@ echo "DIB_BOOTLOADER_DEFAULT_CMDLINE: $DIB_BOOTLOADER_DEFAULT_CMDLINE"
 
 if [ $isRH -eq 1 ]; then
     if [[ -f /etc/default/grub ]]; then
-        sed -i "s|^\(GRUB_CMDLINE_LINUX=\).*|\1\"${DIB_BOOTLOADER_DEFAULT_CMDLINE}\"|" /etc/default/grub
-        echo -n "Applied changes: " && grep GRUB_CMDLINE_LINUX /etc/default/grub
+	test -f /etc/default/grub && sed -i "s|\(GRUB_CMDLINE_LINUX=\"[^\"]*\)|\1 ${DIB_BOOTLOADER_DEFAULT_CMDLINE}|" /etc/default/grub
+        test $? -eq 0 && echo -n "Applied changes: " && grep GRUB_CMDLINE_LINUX /etc/default/grub
         grub2-mkconfig -o /boot/grub2/grub.cfg  # ✅ Regenerate GRUB for CentOS
     fi
 else
     if [[ -f /etc/default/grub ]]; then
-        sed -i "s|^\(GRUB_CMDLINE_LINUX_DEFAULT=\).*|\1\"${DIB_BOOTLOADER_DEFAULT_CMDLINE}\"|" /etc/default/grub
-        echo -n "Applied changes: " && grep GRUB_CMDLINE_LINUX_DEFAULT /etc/default/grub
+	test -f /etc/default/grub && sed -i "s|\(GRUB_CMDLINE_LINUX_DEFAULT=\"[^\"]*\)|\1 ${DIB_BOOTLOADER_DEFAULT_CMDLINE}|" /etc/default/grub
+        test $? -eq 0 && echo -n "Applied changes: " && grep GRUB_CMDLINE_LINUX_DEFAULT /etc/default/grub
         update-grub  # ✅ Regenerate GRUB for Ubuntu
     fi
 fi

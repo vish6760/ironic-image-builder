@@ -1,5 +1,15 @@
 #!/bin/bash
-set -eux
+
+# Enable debugging mode based on a condition
+if [ 0 -gt 0 ]; then
+    set -x
+else
+    set -v
+fi
+
+# Ensure the script exits on error
+set -eu
+set -o pipefail
 
 echo "Adding a script to run 'lsblk' upon user login"
 

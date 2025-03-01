@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# Enable debugging mode based on a condition
+if [ 0 -gt 0 ]; then
+    set -x
+else
+    set -v
+fi
+
+# Ensure the script exits on error
+set -eu
+set -o pipefail
+
 isRH=0
 
 egrep -q -i 'Centos|RedHat' /etc/redhat-release 2>/dev/null && isRH=1

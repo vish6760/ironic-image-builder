@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Enable debugging mode based on a condition
+if [ 0 -gt 0 ]; then
+    set -x
+else
+    set -v
+fi
+
+# Ensure the script exits on error
+set -eu
+set -o pipefail
+
+BLACKLIST_MODULES=("bfa" "lpfc")
+
+echo "Appending kernel modules to /etc/modprobe.d/blacklist.conf"
+
+# Check if the blacklist.conf file exists
+if [[ ! -f /etc/modprobe.d/blacklist.conf ]]; then
+    echo "Creating /etc/modprobe.d/blacklist.conf"
+    touch /etc/modprobe.d/blacklist.conf
+fi
+
+# Blacklist the specified modules
+for module in "${BLACKLIST_MODULES[@]}"; do
+    if ! grep -q "blacklist $module" /etc/modprobe.d/blacklist.conf; then
+        echo "blacklist $module" >> /etc/modprobe.d/blacklist.conf
+    fi
+done
+
+# For CentOS and Ubuntu, run update-modules if it exists
+if [[ -f /usr/sbin/update-initramfs ]]; then
+    update-initramfs -u
+elif [[ -f /usr/sbin/dracut ]]; then
+    dracut --force
+fi
+
+echo "Modules successfully blacklisted."
+
