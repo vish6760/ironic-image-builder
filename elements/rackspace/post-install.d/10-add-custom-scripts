@@ -1,0 +1,13 @@
+#!/bin/bash
+set -eux
+
+echo "Adding a script to run 'lsblk' upon user login"
+
+# Create a profile script to execute the command at login
+cat <<EOL > /etc/profile.d/show-disks.sh
+#!/bin/bash
+lsblk -Pbdi -oKNAME,SIZE,ROTA,SERIAL
+EOL
+
+# Ensure the script is executable
+chmod +x /etc/profile.d/show-disks.sh

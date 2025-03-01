@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -eux  # Enable debugging and exit on error
+
+echo "Create ipa-rescue-config directory and file"
+mkdir /etc/ipa-rescue-config
+touch /etc/ipa-rescue-config/ipa-rescue-password
+
+
+echo "Adding message to /etc/issue"
+cat > /etc/issue <<EOF
+██████╗ ██████╗ ███████╗███╗   ██╗███████╗████████╗ █████╗  ██████╗██╗  ██╗
+██╔═══██╗██╔══██╗██╔════╝████╗  ██║██╔════╝╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝
+██║   ██║██████╔╝█████╗  ██╔██╗ ██║███████╗   ██║   ███████║██║     █████╔╝
+██║   ██║██╔═══╝ ██╔══╝  ██║╚██╗██║╚════██║   ██║   ██╔══██║██║     ██╔═██╗
+╚██████╔╝██║     ███████╗██║ ╚████║███████║   ██║   ██║  ██║╚██████╗██║  ██╗
+ ╚═════╝ ╚═╝     ╚══════╝╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
+
+██╗██████╗  ██████╗ ███╗   ██╗██╗ ██████╗
+██║██╔══██╗██╔═══██╗████╗  ██║██║██╔════╝
+██║██████╔╝██║   ██║██╔██╗ ██║██║██║
+██║██╔══██╗██║   ██║██║╚██╗██║██║██║
+██║██║  ██║╚██████╔╝██║ ╚████║██║╚██████╗
+╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝ ╚═════╝
+EOF
+
+# Allow password login for rescue user
+echo "Modifying SSH configuration inside image..."
+sed -i 's|PasswordAuthentication no|PasswordAuthentication yes|g' /etc/ssh/sshd_config

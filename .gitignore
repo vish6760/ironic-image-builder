@@ -1,0 +1,8 @@
+# Ignore virtual environments
+venv/
+image-builder/
+ironic-images/
+
+# Ignore log files
+*.log
+*.bak

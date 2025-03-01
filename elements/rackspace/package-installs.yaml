@@ -1,0 +1,17 @@
+kernel:
+ifenslave:
+bridge-utils:
+vlan:
+tcpdump:
+biosdevname:
+python-dev:
+python3-dev:
+virtualenv:
+lvm:
+networkmgr:
+pkgmgr:
+pciutils:
+ipmitool:
+nvme-cli:
+smartmontools:
+lldpad:

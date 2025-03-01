@@ -1,0 +1,10 @@
+#!/bin/bash
+set -eux
+
+if [[ "\$DISTRO_NAME" == "ubuntu" ]]; then
+    apt update
+    apt install -y ipmitool nvme-cli smartmontools lldpad pciutils
+elif [[ "\$DISTRO_NAME" == "centos" ]]; then
+    dnf check-update
+    dnf install -y ipmitool nvme-cli smartmontools lldpad pciutils
+fi
