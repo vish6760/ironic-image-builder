@@ -3,7 +3,7 @@
 set -eu  # Exit on error
 set -o pipefail  # Fail on first command in pipeline that fails
 
-LOG_FILE="/opt/image_build.log"
+LOG_FILE="$PWD/image_build.log"
 TIMESTAMP=$(date '+%Y%m%d_%H%M%S')
 BACKUP_LOG_FILE="${LOG_FILE}_${TIMESTAMP}.bak"
 
