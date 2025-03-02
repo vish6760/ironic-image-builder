@@ -60,7 +60,7 @@ check_packages() {
 check_packages
 
 # Get user inputs
-read -rp "Enter Distribution Release (default: focal): " DIS
+read -rp "Enter the distro release from the following options: centos9, bionic, focal, jammy (default: focal): " DIS
 DIS=${DIS:-focal}
 
 read -rp "Enter Virtual Environment Directory (default: $(pwd)/image-builder): " VENV_DIR

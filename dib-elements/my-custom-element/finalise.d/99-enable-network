@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# ✅ Enable debugging mode if needed
+if [ 0 -gt 0 ]; then
+    set -x
+else
+    set -v
+fi
+
+# ✅ Ensure the script exits on error
+set -eu
+set -o pipefail
+
+echo "[INFO] Enabling networking services..."
+
+source /etc/os-release
+
+if [[ "${DISTRO_NAME}" == "ubuntu" ]]; then
+    systemctl enable systemd-networkd
+elif [[ "${DISTRO_NAME}" == "centos" || "${DISTRO_NAME}" == "rhel" ]]; then
+    systemctl enable NetworkManager
+fi
+

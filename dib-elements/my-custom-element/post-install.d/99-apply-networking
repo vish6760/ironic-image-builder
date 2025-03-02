@@ -1,0 +1,64 @@
+#!/bin/bash
+
+# ✅ Enable debugging mode if needed
+if [ 0 -gt 0 ]; then
+    set -x
+else
+    set -v
+fi
+
+# ✅ Ensure the script exits on error
+set -eu
+set -o pipefail
+
+echo "[INFO] Applying custom network configuration..."
+
+isRH=0
+
+# ✅ Detect if the OS is RedHat-based (CentOS/RHEL)
+if [[ -f /etc/redhat-release ]]; then
+    grep -q -i 'CentOS\|RedHat' /etc/redhat-release && isRH=1
+fi
+
+if [ $isRH -eq 1 ]; then
+    echo "[INFO] Configuring networking for CentOS/RHEL"
+    mkdir -p /etc/sysconfig/network-scripts
+
+# ✅ Enable DHCP on all interfaces
+    for iface in $(ls /sys/class/net | grep -v lo); do
+        cat <<_EM1 > "/etc/sysconfig/network-scripts/ifcfg-$iface"
+DEVICE=$iface
+NAME=$iface
+BOOTPROTO=dhcp
+ONBOOT=yes
+_EM1
+    done
+
+else
+    echo "[INFO] Detected Debian-based OS (Ubuntu). Configuring Netplan..."
+
+    mkdir -p /etc/netplan/
+
+# ✅ Generate Netplan configuration for all Ethernet interfaces
+
+mkdir -p /etc/netplan
+    cat <<_NETPLAN > /etc/netplan/50-cloud-init.yaml
+network:
+  version: 2
+  ethernets:
+    all-interfaces:
+      match:
+        name: "*"
+      dhcp4: true
+      dhcp6: false
+_NETPLAN
+
+# ✅ Apply Netplan changes
+    netplan generate
+    netplan apply
+
+fi
+
+echo "[INFO] Networking configuration completed successfully!"
+
+

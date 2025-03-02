@@ -10,47 +10,84 @@ fi
 set -eu
 set -o pipefail
 
-echo "${DISTRO_NAME}"
-echo "${DIB_RELEASE}"
-
-# ✅ Fix cloud-init for centos 9
-if [ "${DISTRO_NAME}" != "centos" ]; then
-  exit 0
-elif [ "${DIB_RELEASE}" -ne "9-stream" ]; then
-  exit 0
-fi
+# ✅ Detect the distribution name and release version
 
 
-# ✅ Fix bad cloud-init unit files when present
-test -d /etc/systemd/system/cloud-init.target.wants && fixSystemdScripts=1 || fixSystemdScripts=0
+echo "Detected OS: ${DISTRO_NAME}"
+echo "Release: ${DIB_RELEASE}"
 
-if [ $fixSystemdScripts -eq 1 ]; then
-  mv /etc/systemd/system/cloud-init.target.wants/* /etc/systemd/system/multi-user.target.wants/
-  rm -rf /etc/systemd/system/cloud-init.target.wants
-fi
+# ✅ Function to apply cloud-init fixes for CentOS 9 Stream
+fix_cloud_init_centos() {
+    echo "Applying cloud-init fixes for CentOS 9 Stream..."
 
-# ✅ Turn off script EC2 datasource compatibility checking
-# ✅ See https://bugs.launchpad.net/cloud-init/+bug/1660385
-cat << EOT > /etc/cloud/cloud.cfg.d/99-ec2-datasource.cfg
+    # ✅ Check if cloud-init systemd unit directory exists and fix service linking
+    if [ -d /etc/systemd/system/cloud-init.target.wants ]; then
+        echo "Fixing systemd cloud-init units..."
+        systemctl disable cloud-init cloud-init-local cloud-config cloud-final || true
+        mv /etc/systemd/system/cloud-init.target.wants/* /etc/systemd/system/multi-user.target.wants/ || true
+        rm -rf /etc/systemd/system/cloud-init.target.wants
+    fi
+
+    # ✅ Disable EC2 datasource strict ID check
+    echo "Disabling strict EC2 ID check..."
+    cat << EOT > /etc/cloud/cloud.cfg.d/99-ec2-datasource.cfg
 #cloud-config
- datasource:
+datasource:
   Ec2:
-   strict_id: false
+    strict_id: false
 EOT
 
-cat << EOT > /etc/cloud/cloud.cfg.d/99-warnings.cfg
+    # ✅ Disable cloud-init warnings related to missing datasource ID
+    cat << EOT > /etc/cloud/cloud.cfg.d/99-warnings.cfg
 #cloud-config
- warnings:
-   dsid_missing_source: off
+warnings:
+  dsid_missing_source: off
 EOT
 
-# ✅ Configure only suported datasources
-cat << EOT > /etc/cloud/cloud.cfg.d/99-datasource.cfg
+    # ✅ Configure only supported datasources
+    echo "Configuring cloud-init datasources..."
+    cat << EOT > /etc/cloud/cloud.cfg.d/99-datasource.cfg
 #cloud-config
-  datasources_list:
-    - OpenStack
-    - Ec2
-    - None
+datasource_list:
+  - OpenStack
+  - Ec2
+  - None
 EOT
+}
 
+# ✅ Function to apply cloud-init fixes for Ubuntu
+fix_cloud_init_ubuntu() {
+    echo "Applying cloud-init fixes for Ubuntu..."
+
+    # ✅ Ensure cloud-init service is enabled
+    systemctl enable cloud-init || true
+
+    # ✅ Disable unnecessary cloud-init services that might slow boot time
+    echo "Disabling cloud-init services that are not required..."
+    systemctl disable cloud-init-local || true
+}
+
+# ✅ Apply the appropriate fixes based on OS type
+case "${DISTRO_NAME,,}" in
+    "centos")
+        if [[ "${DIB_RELEASE}" == "9" || "${DIB_RELEASE}" == "9-stream" ]]; then
+            fix_cloud_init_centos
+        else
+            echo "Skipping cloud-init fixes: Not CentOS 9 Stream."
+        fi
+        ;;
+    "ubuntu")
+        fix_cloud_init_ubuntu
+        ;;
+    *)
+        echo "Unsupported OS. No cloud-init fixes applied."
+        exit 0
+        ;;
+esac
+
+# ✅ Verify applied changes
+echo "Cloud-init configuration files:"
 ls -l /etc/cloud/cloud.cfg.d/
+
+echo "Cloud-init fixes applied successfully."
+

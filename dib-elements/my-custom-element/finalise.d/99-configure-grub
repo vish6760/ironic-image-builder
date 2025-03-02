@@ -21,8 +21,10 @@ fi
 
 # ✅ Set bootloader parameters based on OS type
 if [ $isRH -eq 1 ]; then
+    GRUB_CFG_DIR="/boot/grub2"
     export DIB_BOOTLOADER_DEFAULT_CMDLINE="nomodeset console=ttyS1,115200n8 audit=1 audit_backlog_limit=8192 rd.debug=1 rd.auto=1 net.ifnames=0 biosdevname=0"
 else
+    GRUB_CFG_DIR="/boot/grub"
     export DIB_BOOTLOADER_DEFAULT_CMDLINE="nomodeset console=ttyS1,115200n8 audit=1 audit_backlog_limit=8192 net.ifnames=0 biosdevname=0"
 fi
 
@@ -33,7 +35,7 @@ if [ $isRH -eq 1 ]; then
     if [[ -f /etc/default/grub ]]; then
 	test -f /etc/default/grub && sed -i "s|\(GRUB_CMDLINE_LINUX=\"[^\"]*\)|\1 ${DIB_BOOTLOADER_DEFAULT_CMDLINE}|" /etc/default/grub
         test $? -eq 0 && echo -n "Applied changes: " && grep GRUB_CMDLINE_LINUX /etc/default/grub
-        grub2-mkconfig -o /boot/grub2/grub.cfg  # ✅ Regenerate GRUB for CentOS
+        grub2-mkconfig -o ${GRUB_CFG_DIR}/grub.cfg  # ✅ Regenerate GRUB for CentOS
     fi
 else
     if [[ -f /etc/default/grub ]]; then
