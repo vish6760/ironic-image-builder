@@ -27,6 +27,7 @@ if [ $isRH -eq 1 ]; then
 # ✅ Enable DHCP on all interfaces
     for iface in $(ls /sys/class/net | grep -v lo); do
         cat <<_EM1 > "/etc/sysconfig/network-scripts/ifcfg-$iface"
+TYPE=Ethernet
 DEVICE=$iface
 NAME=$iface
 BOOTPROTO=dhcp
