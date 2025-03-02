@@ -132,7 +132,6 @@ disk-image-create $DISTRO_NAME \
   block-device-gpt \
   disable-nouveau \
   cloud-init-datasources \
-  dhcp-all-interfaces \
   vm \
   dhcp-all-interfaces \
   baremetal \
