@@ -132,5 +132,13 @@ export DIB_LOCAL_IMAGE="/opt/local-images/ubuntu.qcow2"
 
 Alternatively, we can configure the build process to reference a pre-existed image within the environment by specifying its URL in the configuration. This can be achieved using the settings defined in `dib-elements/my-custom-element/extra-data.d/10-custom-base-image`.
 
+## Resources and Documentation
 
+(https://github.com/openstack/diskimage-builder)
+(https://github.com/openstack/ironic-python-agent-builder)
+(https://github.com/openstack/ironic-python-agent)
+(https://github.com/openstack/requirements)
+(https://github.com/openstack/ironic-lib)
+(https://docs.openstack.org/ironic-python-agent-builder/latest/admin/dib.html)
+(https://docs.openstack.org/ironic-python-agent/latest/admin/troubleshooting.html)
 
