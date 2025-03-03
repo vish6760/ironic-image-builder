@@ -98,7 +98,7 @@ openstack image create "Custom my-custom-element Image" \
 | `package-installs.yaml` | Defines required packages for the image |
 | `pkg-map`           | Maps packages across different distributions |
 
-## ð Use a Local PyPI Mirror for Python Packages
+## 🛠️ Use a Local PyPI Mirror for Python Packages
 
 Instead of fetching packages from `pypi.org`, use a local **PyPI mirror**.
 
@@ -114,7 +114,7 @@ index-url = http://your-internal-mirror/pypi/simple
 trusted-host = your-internal-mirror
 ```
 
-## ð Disable Online Image Fetching (Use Local Base Image)
+## 🛠️ Disable Online Image Fetching (Use Local Base Image)
 
 DIB normally fetches cloud images. To avoid this:
 
