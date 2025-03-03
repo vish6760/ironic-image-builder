@@ -10,12 +10,16 @@ fi
 set -eu
 set -o pipefail
 
+# ✅ Specify the URL of a pre-existing base image
 #export BASE_IMAGE_URL="http://your-custom-server.com/path/to/custom-image.qcow2"
+# ✅ Specify the local file path where the image should be download
 #export IMAGE_LOCATION="/var/tmp/custom-image.qcow2"
 
 # ✅ Ensure the image is downloaded if it doesn't exist
 #if [ ! -f "$IMAGE_LOCATION" ]; then
 #    echo "Downloading base image..."
 #    curl -o "$IMAGE_LOCATION" "$BASE_IMAGE_URL"
+#else
+#    echo "Using existing base image at $IMAGE_LOCATION"
 #fi
 

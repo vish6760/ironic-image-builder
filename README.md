@@ -17,7 +17,7 @@ This repository contains scripts and custom elements for building an **Ironic Py
         │   └── 10-custom-base-image   # Defines custom base image sources
         ├── finalise.d                 # Final configuration before image completion
         │   ├── 99-custom-grub         # Custom GRUB configuration
-            └── 99-enable-network      # Ensures networking is enabled
+        │   └── 99-enable-network      # Ensures networking is enabled
         ├── install.d                  # Package installation scripts
         │   └── 50-install-packages    # Installs required packages
         ├── package-installs.yaml      # Package list for installation
@@ -97,5 +97,39 @@ openstack image create "Custom my-custom-element Image" \
 | `post-install.d/`   | Runs scripts after the image is built |
 | `package-installs.yaml` | Defines required packages for the image |
 | `pkg-map`           | Maps packages across different distributions |
+
+## ð Use a Local PyPI Mirror for Python Packages
+
+Instead of fetching packages from `pypi.org`, use a local **PyPI mirror**.
+
+1. Set up a PyPI mirror using devpi or bandersnatch or use existing PyPI mirror.
+2. Configure `DIB_PYTHON_PACKAGE_MIRROR`:
+```bash
+export DIB_PYTHON_PACKAGE_MIRROR="http://your-internal-mirror/pypi/simple"
+```
+3. Alternatively, modify the `pip.conf` file:
+```bash
+[global]
+index-url = http://your-internal-mirror/pypi/simple
+trusted-host = your-internal-mirror
+```
+
+## ð Disable Online Image Fetching (Use Local Base Image)
+
+DIB normally fetches cloud images. To avoid this:
+
+1. Download the cloud image manually and store it internally:
+```bash
+mkdir -p /opt/local-images/
+wget -O /opt/local-images/ubuntu.qcow2 https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img
+```
+
+2. Set `DIB_LOCAL_IMAGE`:
+```bash
+export DIB_LOCAL_IMAGE="/opt/local-images/ubuntu.qcow2"
+```
+
+Alternatively, we can configure the build process to reference a pre-existing image within the environment by specifying its URL in the configuration. This can be achieved using the settings defined in `dib-elements/my-custom-element/extra-data.d/10-custom-base-image`.
+
 
 
