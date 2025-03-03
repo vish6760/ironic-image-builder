@@ -130,7 +130,7 @@ wget -O /opt/local-images/ubuntu.qcow2 https://cloud-images.ubuntu.com/releases/
 export DIB_LOCAL_IMAGE="/opt/local-images/ubuntu.qcow2"
 ```
 
-Alternatively, we can configure the build process to reference a pre-existing image within the environment by specifying its URL in the configuration. This can be achieved using the settings defined in `dib-elements/my-custom-element/extra-data.d/10-custom-base-image`.
+Alternatively, we can configure the build process to reference a pre-existed image within the environment by specifying its URL in the configuration. This can be achieved using the settings defined in `dib-elements/my-custom-element/extra-data.d/10-custom-base-image`.
 
 
 
