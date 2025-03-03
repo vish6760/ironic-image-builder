@@ -32,7 +32,7 @@ This repository contains scripts and custom elements for building an **Ironic Py
 
 ## 🚀 Getting Started
 
-🚀 **Prerequisites**
+**Prerequisites**
 
 Ensure your system meets the following requirements:
 
