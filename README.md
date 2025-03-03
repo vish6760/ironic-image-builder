@@ -32,15 +32,15 @@ This repository contains scripts and custom elements for building an **Ironic Py
 
 ## 🚀 Getting Started
 
-🚀 Prerequisites
+🚀 **Prerequisites**
 
 Ensure your system meets the following requirements:
 
-Operating System:  
+**Operating System:**  
 Ubuntu 20.04 / 22.04  
 CentOS 9 Stream  
 
-Required Packages:  
+**Required Packages:**  
 Before running the script, install the necessary dependencies:  
 
 ### **This IPA image build process has been tested on an Ubuntu 20.04 virtual machine, but you are welcome to test it on other distributions.**
