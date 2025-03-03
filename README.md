@@ -134,11 +134,11 @@ Alternatively, we can configure the build process to reference a pre-existed ima
 
 ## Resources and Documentation
 
-(https://github.com/openstack/diskimage-builder)
-(https://github.com/openstack/ironic-python-agent-builder)
-(https://github.com/openstack/ironic-python-agent)
-(https://github.com/openstack/requirements)
-(https://github.com/openstack/ironic-lib)
-(https://docs.openstack.org/ironic-python-agent-builder/latest/admin/dib.html)
-(https://docs.openstack.org/ironic-python-agent/latest/admin/troubleshooting.html)
+(https://github.com/openstack/diskimage-builder)  
+(https://github.com/openstack/ironic-python-agent-builder)  
+(https://github.com/openstack/ironic-python-agent)  
+(https://github.com/openstack/requirements)  
+(https://github.com/openstack/ironic-lib)  
+(https://docs.openstack.org/ironic-python-agent-builder/latest/admin/dib.html)  
+(https://docs.openstack.org/ironic-python-agent/latest/admin/troubleshooting.html)  
 
