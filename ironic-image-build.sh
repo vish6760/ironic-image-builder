@@ -69,9 +69,11 @@ VENV_DIR=${VENV_DIR:-$(pwd)/image-builder}
 read -rp "Enter Output Directory (default: $(pwd)/ironic-images): " OUTPUT_DIR
 OUTPUT_DIR=${OUTPUT_DIR:-$(pwd)/ironic-images}
 
+#https://github.com/openstack/diskimage-builder
 read -rp "Enter Diskimage-Builder Version (default: 3.31.0): " DIB_VERSION
 DIB_VERSION=${DIB_VERSION:-3.31.0}
 
+#https://github.com/openstack/ironic-python-agent-builder
 read -rp "Enter Ironic-Python-Agent-Builder Version (default: 5.0.1): " IPA_BUILDER_VERSION
 IPA_BUILDER_VERSION=${IPA_BUILDER_VERSION:-5.0.1}
 
@@ -98,11 +100,15 @@ CUSTOM_ELEMENTS="$(pwd)/dib-elements"
 export ELEMENTS_PATH="${ELEMENTS_PATH:-$CUSTOM_ELEMENTS}"
 
 echo  # New line for clarity
+
+#https://github.com/openstack/ironic-python-agent
 read -rp "Enter Ironic Python Agent Branch (default: unmaintained/victoria): " DIB_REPOREF_ironic_python_agent
 DIB_REPOREF_ironic_python_agent=${DIB_REPOREF_ironic_python_agent:-unmaintained/victoria}
 
 export DIB_REPOREF_ironic_python_agent
+#https://github.com/openstack/requirements
 export DIB_REPOREF_requirements="$DIB_REPOREF_ironic_python_agent"
+#https://github.com/openstack/ironic-lib
 export DIB_REPOREF_ironic_lib="$DIB_REPOREF_ironic_python_agent"
 
 # Specify SHA-512 hash
