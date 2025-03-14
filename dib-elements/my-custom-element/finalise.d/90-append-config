@@ -58,9 +58,7 @@ sed -i 's|#PermitRootLogin prohibit-password|PermitRootLogin yes|g' /etc/ssh/ssh
 #echo "Modifying SSH configuration inside image..."
 #sed -i 's|PasswordAuthentication no|PasswordAuthentication yes|g' /etc/ssh/sshd_config.d/60-cloudimg-settings.conf
 
-#!/bin/bash
-
-# Detect OS and version
+# ✅ Detect OS and version
 if [[ -f /etc/os-release ]]; then
     . /etc/os-release
     OS_NAME=$ID         # ubuntu, centos, etc.
@@ -70,7 +68,7 @@ else
     exit 1
 fi
 
-# Determine the correct SSH config file
+# ✅ Determine the correct SSH config file
 if [[ "$OS_NAME" == "ubuntu" ]]; then
     case "$OS_VERSION" in
         "18.04")
@@ -91,7 +89,7 @@ else
     exit 1
 fi
 
-# Modify PasswordAuthentication setting
+# ✅ Modify PasswordAuthentication setting
 if [[ -f "$SSH_CONFIG_FILE" ]]; then
     sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/' "$SSH_CONFIG_FILE"
     echo "Updated PasswordAuthentication in $SSH_CONFIG_FILE"
@@ -100,7 +98,7 @@ else
     exit 1
 fi
 
-# Restart SSH service to apply changes
+# ✅ Restart SSH service to apply changes
 if [[ "$OS_NAME" == "centos" ]]; then
     ssh-keygen -A           # Generating new host keys
     systemctl restart sshd  # CentOS uses sshd
@@ -110,4 +108,3 @@ else
 fi
 
 echo "SSH service restarted successfully."
-
