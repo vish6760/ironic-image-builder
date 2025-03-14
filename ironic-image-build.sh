@@ -83,8 +83,7 @@ mkdir -p "$OUTPUT_DIR" || error_exit "Failed to create output directory: $OUTPUT
 # Install required packages and setup virtual environment
 log "Setting up virtual environment in $VENV_DIR"
 [ -d "$VENV_DIR" ] && rm -rf "$VENV_DIR"
-python3 -m venv "$VENV_DIR" || error_exit "Failed to create virtual environment"
-#virtualenv -p python3 "$VENV_DIR" || error_exit "Failed to create virtual environment"
+virtualenv -p python3 "$VENV_DIR" || error_exit "Failed to create virtual environment"
 
 # Install required packages in the venv
 log "Installing diskimage-builder ($DIB_VERSION) and ironic-python-agent-builder ($IPA_BUILDER_VERSION)"
