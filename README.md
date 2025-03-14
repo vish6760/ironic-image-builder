@@ -16,6 +16,7 @@ This repository contains scripts and custom elements for building an **Ironic Py
         ├── extra-data.d               # Extra files needed during the build
         │   └── 10-custom-base-image   # Defines custom base image sources
         ├── finalise.d                 # Final configuration before image completion
+        │   ├── 90-append-config       # Add additional custom config 
         │   ├── 99-custom-grub         # Custom GRUB configuration
         │   └── 99-enable-network      # Ensures networking is enabled
         ├── install.d                  # Package installation scripts
@@ -25,7 +26,6 @@ This repository contains scripts and custom elements for building an **Ironic Py
         └── post-install.d             # Post-installation scripts
             ├── 03-fix-cloud-init      # Fixes cloud-init issues
             ├── 10-add-custom-scripts  # Adds additional custom scripts
-            ├── 90-clean-tasks         # Performs cleanup tasks
             ├── 99-apply-networking    # Applies networking configurations 
             └── 99-blacklist-modules   # Blacklists unwanted kernel modules
 ```
@@ -66,6 +66,12 @@ sudo dnf install -y python3-virtualenv qemu-img kpartx qemu squashfs-tools curl 
 ```
 
 ### 3️⃣ **Build the Image**
+Generate the encrypted password using `openssl`
+```bash
+openssl passwd -6 '<PASSWORD>' |sed 's/\$/\\$/g'
+```
+Update the generated encrypt password in `ironic-image-build.sh` at line 109
+
 Run the `ironic-image-build.sh` script to create the image:
 ```bash
 ./ironic-image-build.sh

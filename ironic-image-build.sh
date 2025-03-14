@@ -75,18 +75,14 @@ DIB_VERSION=${DIB_VERSION:-3.31.0}
 read -rp "Enter Ironic-Python-Agent-Builder Version (default: 5.0.1): " IPA_BUILDER_VERSION
 IPA_BUILDER_VERSION=${IPA_BUILDER_VERSION:-5.0.1}
 
-read -rsp "Enter Dev User Password: " DIB_DEV_USER_PASSWORD
-echo  # New line for clarity
-
-log "User Inputs Collected Successfully"
-
 # Ensure output directory exists
 mkdir -p "$OUTPUT_DIR" || error_exit "Failed to create output directory: $OUTPUT_DIR"
 
 # Install required packages and setup virtual environment
 log "Setting up virtual environment in $VENV_DIR"
 [ -d "$VENV_DIR" ] && rm -rf "$VENV_DIR"
-virtualenv -p python3 "$VENV_DIR" || error_exit "Failed to create virtual environment"
+python3 -m venv "$VENV_DIR" || error_exit "Failed to create virtual environment"
+#virtualenv -p python3 "$VENV_DIR" || error_exit "Failed to create virtual environment"
 
 # Install required packages in the venv
 log "Installing diskimage-builder ($DIB_VERSION) and ironic-python-agent-builder ($IPA_BUILDER_VERSION)"
@@ -100,9 +96,6 @@ source "$VENV_DIR/bin/activate"
 # Set Environment Variables
 CUSTOM_ELEMENTS="$(pwd)/dib-elements"
 export ELEMENTS_PATH="${ELEMENTS_PATH:-$CUSTOM_ELEMENTS}"
-export DIB_DEV_USER_USERNAME=devuser
-export DIB_DEV_USER_PWDLESS_SUDO=yes
-export DIB_DEV_USER_PASSWORD="$DIB_DEV_USER_PASSWORD"
 
 echo  # New line for clarity
 read -rp "Enter Ironic Python Agent Branch (default: unmaintained/victoria): " DIB_REPOREF_ironic_python_agent
@@ -111,6 +104,9 @@ DIB_REPOREF_ironic_python_agent=${DIB_REPOREF_ironic_python_agent:-unmaintained/
 export DIB_REPOREF_ironic_python_agent
 export DIB_REPOREF_requirements="$DIB_REPOREF_ironic_python_agent"
 export DIB_REPOREF_ironic_lib="$DIB_REPOREF_ironic_python_agent"
+
+# Specify SHA-512 hash
+export ENCRYPTED_PASSWORD="UPDATE-ME"
 
 # Set Disk Image Builder variables
 case "$DIS" in
@@ -134,9 +130,9 @@ disk-image-create $DISTRO_NAME \
   cloud-init-datasources \
   vm \
   dhcp-all-interfaces \
+  dynamic-login \
   baremetal \
   grub2 \
-  devuser \
   my-custom-element -o "${OUTPUT_DIR}/${IMG_NAME}" 2>&1 | tee -a "$LOG_FILE"
 
 # Check if image creation succeeded

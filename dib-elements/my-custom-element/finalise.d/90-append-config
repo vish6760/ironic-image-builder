@@ -1,0 +1,113 @@
+#!/bin/bash
+
+# ✅ Enable debugging mode based on a condition
+if [ 0 -gt 0 ]; then
+    set -x
+else
+    set -v
+fi
+
+# ✅ Ensure the script exits on error
+set -eu
+set -o pipefail
+
+echo "Starting user creation script."
+
+# ✅ Create the user if it does not exist
+if id "devuser" &>/dev/null; then
+    echo "User 'devuser' already exists, skipping creation."
+else
+    echo "Creating user 'devuser'."
+    useradd -m -s /bin/bash devuser
+    echo "devuser:"$ENCRYPTED_PASSWORD"" | chpasswd -e
+    echo "devuser ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+    echo "User 'devuser' created successfully with sudo privileges."
+fi
+
+echo "Create ipa-rescue-config directory and file"
+mkdir /etc/ipa-rescue-config
+touch /etc/ipa-rescue-config/ipa-rescue-password
+
+
+echo "Adding message to /etc/issue"
+cat > /etc/issue <<EOF
+██████╗ ██████╗ ███████╗███╗   ██╗███████╗████████╗ █████╗  ██████╗██╗  ██╗
+██╔═══██╗██╔══██╗██╔════╝████╗  ██║██╔════╝╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝
+██║   ██║██████╔╝█████╗  ██╔██╗ ██║███████╗   ██║   ███████║██║     █████╔╝
+██║   ██║██╔═══╝ ██╔══╝  ██║╚██╗██║╚════██║   ██║   ██╔══██║██║     ██╔═██╗
+╚██████╔╝██║     ███████╗██║ ╚████║███████║   ██║   ██║  ██║╚██████╗██║  ██╗
+ ╚═════╝ ╚═╝     ╚══════╝╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
+
+██╗██████╗  ██████╗ ███╗   ██╗██╗ ██████╗
+██║██╔══██╗██╔═══██╗████╗  ██║██║██╔════╝
+██║██████╔╝██║   ██║██╔██╗ ██║██║██║
+██║██╔══██╗██║   ██║██║╚██╗██║██║██║
+██║██║  ██║╚██████╔╝██║ ╚████║██║╚██████╗
+╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝ ╚═════╝
+EOF
+
+# ✅ Allow password login for rescue user
+echo "Modifying SSH configuration inside image..."
+sed -i 's|#PasswordAuthentication yes|PasswordAuthentication yes|g' /etc/ssh/sshd_config
+
+# ✅ Allow root login
+echo "Modifying root login configuration inside image..."
+sed -i 's|#PermitRootLogin prohibit-password|PermitRootLogin yes|g' /etc/ssh/sshd_config
+
+# ✅ Allow password login for rescue user
+#echo "Modifying SSH configuration inside image..."
+#sed -i 's|PasswordAuthentication no|PasswordAuthentication yes|g' /etc/ssh/sshd_config.d/60-cloudimg-settings.conf
+
+#!/bin/bash
+
+# Detect OS and version
+if [[ -f /etc/os-release ]]; then
+    . /etc/os-release
+    OS_NAME=$ID         # ubuntu, centos, etc.
+    OS_VERSION=$VERSION_ID  # "18.04", "20.04", "22.04", "9"
+else
+    echo "Cannot determine OS version."
+    exit 1
+fi
+
+# Determine the correct SSH config file
+if [[ "$OS_NAME" == "ubuntu" ]]; then
+    case "$OS_VERSION" in
+        "18.04")
+            SSH_CONFIG_FILE="/etc/ssh/sshd_config"
+            ;;
+        "20.04"|"22.04")
+            SSH_CONFIG_FILE="/etc/ssh/sshd_config.d/60-cloudimg-settings.conf"
+            ;;
+        *)
+            echo "Unsupported Ubuntu version: $OS_VERSION"
+            exit 1
+            ;;
+    esac
+elif [[ "$OS_NAME" == "centos" && "$OS_VERSION" == "9" ]]; then
+    SSH_CONFIG_FILE="/etc/ssh/sshd_config"
+else
+    echo "Unsupported OS: $OS_NAME $OS_VERSION"
+    exit 1
+fi
+
+# Modify PasswordAuthentication setting
+if [[ -f "$SSH_CONFIG_FILE" ]]; then
+    sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/' "$SSH_CONFIG_FILE"
+    echo "Updated PasswordAuthentication in $SSH_CONFIG_FILE"
+else
+    echo "SSH config file not found: $SSH_CONFIG_FILE"
+    exit 1
+fi
+
+# Restart SSH service to apply changes
+if [[ "$OS_NAME" == "centos" ]]; then
+    ssh-keygen -A           # Generating new host keys
+    systemctl restart sshd  # CentOS uses sshd
+    systemctl enable sshd
+else
+    systemctl restart ssh  # Ubuntu uses ssh
+fi
+
+echo "SSH service restarted successfully."
+

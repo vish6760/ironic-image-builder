@@ -39,8 +39,8 @@ if [ $isRH -eq 1 ]; then
     fi
 else
     if [[ -f /etc/default/grub ]]; then
-	test -f /etc/default/grub && sed -i "s|\(GRUB_CMDLINE_LINUX_DEFAULT=\"[^\"]*\)|\1 ${DIB_BOOTLOADER_DEFAULT_CMDLINE}|" /etc/default/grub
-        test $? -eq 0 && echo -n "Applied changes: " && grep GRUB_CMDLINE_LINUX_DEFAULT /etc/default/grub
+	test -f /etc/default/grub.d/50-cloudimg-settings.cfg && sed -i "s|\(GRUB_CMDLINE_LINUX_DEFAULT=\"[^\"]*\)|\1 ${DIB_BOOTLOADER_DEFAULT_CMDLINE} |" /etc/default/grub.d/50-cloudimg-settings.cfg
+        test $? -eq 0 && echo -n "Applied changes: " && grep GRUB_CMDLINE_LINUX_DEFAULT /etc/default/grub.d/50-cloudimg-settings.cfg
         update-grub  # ✅ Regenerate GRUB for Ubuntu
     fi
 fi
