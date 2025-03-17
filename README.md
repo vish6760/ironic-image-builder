@@ -80,7 +80,7 @@ Run the `ironic-image-build.sh` script to create the image:
 This script will use the `my-custom-element` element and apply all custom configurations.
 
 ### 4️⃣ **Customize the Image**
-Modify the files inside the `elements/my-custom-element/` directory to:
+Modify the files inside the `dib-elements/my-custom-element/` directory to:
 - Add/remove packages (`package-installs.yaml`)
 - Change cloud-init behavior (`post-install.d/03-fix-cloud-init`)
 - Modify GRUB settings (`finalise.d/99-custom-grub`)
