@@ -49,7 +49,7 @@ cd ironic-image-builder
 ```
 
 ### 2️⃣ **Install Dependencies**
-Ensure you have the following installed on your system: Most of them cover with `ironic-image-build.sh`
+You can install dependencies manually or the `ironic-image-build.sh` script will install the required packages.
 
 ### Ubuntu/Debian:
 ```bash
