@@ -40,10 +40,7 @@ Ensure your system meets the following requirements:
 Ubuntu 20.04 / 22.04  
 CentOS 9 Stream  
 
-**Required Packages:**  
-Before running the script, install the necessary dependencies:  
-
-### **This IPA image build process has been tested on an Ubuntu 20.04 virtual machine, but you are welcome to test it on other distributions.**
+**NOTE:** This IPA image build process has been tested on an Ubuntu 20.04 virtual machine, but you are welcome to test it on other distributions.**
 
 ### 1️⃣ **Clone the Repository**
 ```bash
@@ -54,13 +51,13 @@ cd ironic-image-builder
 ### 2️⃣ **Install Dependencies**
 Ensure you have the following installed on your system: Most of them cover with `ironic-image-build.sh`
 
-On **Ubuntu/Debian**:
+### Ubuntu/Debian:
 ```bash
 sudo apt update
 sudo apt install -y python3-virtualenv qemu-utils kpartx qemu squashfs-tools curl uuid-runtime
 ```
 
-On **CentOS/RHEL**:
+### CentOS/RHEL:
 ```bash
 sudo dnf install -y python3-virtualenv qemu-img kpartx qemu squashfs-tools curl util-linux
 ```
@@ -141,6 +138,7 @@ Alternatively, we can configure the build process to reference a pre-existed ima
 ## Resources and Documentation
 
 (https://github.com/openstack/diskimage-builder)  
+(https://github.com/openstack/diskimage-builder/tree/master/diskimage_builder/elements)  
 (https://github.com/openstack/ironic-python-agent-builder)  
 (https://github.com/openstack/ironic-python-agent)  
 (https://github.com/openstack/requirements)  
