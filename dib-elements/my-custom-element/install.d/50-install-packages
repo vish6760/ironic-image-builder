@@ -10,10 +10,10 @@ fi
 set -eu
 set -o pipefail
 
-if [[ "\$DISTRO_NAME" == "ubuntu" ]]; then
+if [[ "${DISTRO_NAME}" == "ubuntu" ]]; then
     apt update
     apt install -y ipmitool nvme-cli smartmontools lldpad pciutils
-elif [[ "\$DISTRO_NAME" == "centos" ]]; then
+elif [[ "${DISTRO_NAME}" == "centos" ]]; then
     dnf check-update
     dnf install -y ipmitool nvme-cli smartmontools lldpad pciutils
 fi
