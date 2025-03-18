@@ -40,7 +40,7 @@ Ensure your system meets the following requirements:
 Ubuntu 20.04 / 22.04  
 CentOS 9 Stream  
 
-**NOTE:** This IPA image build process has been tested on an Ubuntu 20.04 virtual machine, but you are welcome to test it on other distributions.**
+**NOTE:** This IPA image build process has been tested on an Ubuntu 20.04 virtual machine, but you are welcome to test it on other distributions.
 
 ### 1️⃣ **Clone the Repository**
 ```bash
