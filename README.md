@@ -67,7 +67,7 @@ Generate the encrypted password using `openssl`
 ```bash
 openssl passwd -6 '<PASSWORD>' |sed 's/\$/\\$/g'
 ```
-Update the generated encrypt password in `ironic-image-build.sh` at line 114 or search for ENCRYPTED_PASSWORD.
+Update the generated encrypt password in `ironic-image-build.sh` by searching for `ENCRYPTED_PASSWORD`.
 
 Run the `ironic-image-build.sh` script to create the image:
 ```bash
