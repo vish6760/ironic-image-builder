@@ -90,18 +90,6 @@ openstack image create "Custom my-custom-element Image" \
   --file output-image.qcow2
 ```
 
-## 🛠️ Custom DIB Element Details
-
-| Directory            | Purpose |
-|----------------------|---------|
-| `environment.d/`    | Sets environment variables used in the build |
-| `extra-data.d/`     | Provides additional files needed during the build |
-| `finalise.d/`       | Executes final tasks before finalizing the image |
-| `install.d/`        | Installs necessary packages |
-| `post-install.d/`   | Runs scripts after the image is built |
-| `package-installs.yaml` | Defines required packages for the image |
-| `pkg-map`           | Maps packages across different distributions |
-
 ## 🛠️ Use a Local PyPI Mirror for Python Packages
 
 Instead of fetching packages from `pypi.org`, use a local **PyPI mirror**.
@@ -135,10 +123,29 @@ export DIB_LOCAL_IMAGE="/opt/local-images/ubuntu.qcow2"
 
 Alternatively, we can configure the build process to reference a pre-existed image within the environment by specifying its URL in the configuration. This can be achieved using the settings defined in `dib-elements/my-custom-element/extra-data.d/10-custom-base-image`.
 
+## 🛠️ Custom DIB Element Details
+
+| Directory            | Purpose |
+|----------------------|---------|
+| `environment.d/`    | Sets environment variables used in the build |
+| `extra-data.d/`     | Provides additional files needed during the build |
+| `finalise.d/`       | Executes final tasks before finalizing the image |
+| `install.d/`        | Installs necessary packages |
+| `post-install.d/`   | Runs scripts after the image is built |
+| `package-installs.yaml` | Defines required packages for the image |
+| `pkg-map`           | Maps packages across different distributions |
+
+## Key Notes
+ 
+1. Naming Convention: Each custom element (like my-custom-element/)should have a unique name and we can name the element anything. Custom elements are used as arguments when building the image. For example, if we have an element named `my-custom-element`, must specify it with in the `disk-image-builder` command before running.
+2. Naming of Scripts inside elements: Scripts inside `environment.d`,`extra-data.d`,`finalise.d`,`install.d`,`post-install.d` follow a numbered ordering. The numbering affects execution order, with lower numbers running first. File names must not have extensions, as they are directly sourced/executed. Scripts names must follow a numeric prefix (e.g.,50-install-packages)
+3. Files like `element-deps`, `pkg-map` and `package-installs.yaml` must follow their format to work correctly.
+
 ## Resources and Documentation
 
 (https://github.com/openstack/diskimage-builder)  
 (https://github.com/openstack/diskimage-builder/tree/master/diskimage_builder/elements)  
+(https://docs.openstack.org/diskimage-builder/latest/developer/developing_elements.html#phase-subdirectories)  
 (https://github.com/openstack/ironic-python-agent-builder)  
 (https://github.com/openstack/ironic-python-agent)  
 (https://github.com/openstack/requirements)  
