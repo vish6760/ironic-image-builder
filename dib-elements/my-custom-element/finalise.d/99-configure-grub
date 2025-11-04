@@ -45,5 +45,25 @@ else
     fi
 fi
 
+# -----------------------------
+# UEFI support: install EFI binaries
+# -----------------------------
+if [[ -d /sys/firmware/efi ]] || [[ -d /boot/efi ]]; then
+    # Ensure EFI directory exists
+    mkdir -p /boot/efi/EFI/ubuntu
+
+    # Install GRUB EFI binaries for x86_64-efi
+    grub-install --target=x86_64-efi \
+                 --efi-directory=/boot/efi \
+                 --bootloader-id=ubuntu \
+                 --recheck \
+                 --removable \
+		         --no-nvram
+
+    echo "✅ UEFI GRUB installed successfully"
+else
+    echo "⚠️ Legacy BIOS detected; skipping UEFI installation"
+fi
+
 echo $?
 
