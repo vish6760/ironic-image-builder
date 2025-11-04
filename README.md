@@ -45,7 +45,7 @@ CentOS 9 Stream
 ### 1️⃣ **Clone the Repository**
 ```bash
 git clone https://github.com/vish6760/ironic-image-builder.git /opt/ironic-image-builder
-cd ironic-image-builder
+cd /opt/ironic-image-builder
 ```
 
 ### 2️⃣ **Install Dependencies**
