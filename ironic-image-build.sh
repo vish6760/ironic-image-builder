@@ -70,12 +70,12 @@ read -rp "Enter Output Directory (default: $(pwd)/ironic-images): " OUTPUT_DIR
 OUTPUT_DIR=${OUTPUT_DIR:-$(pwd)/ironic-images}
 
 #https://github.com/openstack/diskimage-builder
-read -rp "Enter Diskimage-Builder Version (default: 3.31.0): " DIB_VERSION
-DIB_VERSION=${DIB_VERSION:-3.31.0}
+read -rp "Enter Diskimage-Builder Version (default: 3.38.0): " DIB_VERSION
+DIB_VERSION=${DIB_VERSION:-3.38.0}
 
 #https://github.com/openstack/ironic-python-agent-builder
-read -rp "Enter Ironic-Python-Agent-Builder Version (default: 5.0.1): " IPA_BUILDER_VERSION
-IPA_BUILDER_VERSION=${IPA_BUILDER_VERSION:-5.0.1}
+#read -rp "Enter Ironic-Python-Agent-Builder Version (default: 5.0.1): " IPA_BUILDER_VERSION
+#IPA_BUILDER_VERSION=${IPA_BUILDER_VERSION:-5.0.1}
 
 # Ensure output directory exists
 mkdir -p "$OUTPUT_DIR" || error_exit "Failed to create output directory: $OUTPUT_DIR"
@@ -101,14 +101,19 @@ export ELEMENTS_PATH="${ELEMENTS_PATH:-$CUSTOM_ELEMENTS}"
 echo  # New line for clarity
 
 #https://github.com/openstack/ironic-python-agent
-read -rp "Enter Ironic Python Agent Branch (default: unmaintained/victoria): " DIB_REPOREF_ironic_python_agent
-DIB_REPOREF_ironic_python_agent=${DIB_REPOREF_ironic_python_agent:-unmaintained/victoria}
+read -rp "Enter Ironic Python Agent Branch (default: stable/2024.1): " DIB_REPOREF_ironic_python_agent
+DIB_REPOREF_ironic_python_agent=${DIB_REPOREF_ironic_python_agent:-stable/2024.1}
 
 export DIB_REPOREF_ironic_python_agent
+
 #https://github.com/openstack/requirements
-export DIB_REPOREF_requirements="$DIB_REPOREF_ironic_python_agent"
+read -rp "Enter requirements Branch (default: stable/2024.1): " DIB_REPOREF_requirements
+DIB_REPOREF_requirements=${DIB_REPOREF_requirements:-stable/2024.1}
+
+export DIB_REPOREF_requirements
+
 #https://github.com/openstack/ironic-lib
-export DIB_REPOREF_ironic_lib="$DIB_REPOREF_ironic_python_agent"
+#export DIB_REPOREF_ironic_lib="$DIB_REPOREF_ironic_python_agent"
 
 # Specify SHA-512 hash
 export ENCRYPTED_PASSWORD="UPDATE-ME"
@@ -122,6 +127,85 @@ case "$DIS" in
   *) error_exit "Invalid distribution release: $DIS" ;;
 esac
 
+export FS_TYPE=ext4
+export LVM=false
+export COMPRESS_IMAGE='1'
+export DIB_IMAGE_SIZE='299G'
+
+export DIB_BLOCK_DEVICE_CONFIG='''
+- local_loop:
+    name: image0
+- partitioning:
+    base: image0
+    label: gpt
+    partitions:
+      - name: ESP
+        type: 'EF00'
+        size: 550MiB
+        mkfs:
+          type: vfat
+          mount:
+            mount_point: /boot/efi
+            fstab:
+              options: "defaults"
+              fsck-passno: 2
+      - name: BSP
+        type: 'EF02'
+        size: 8MiB
+      - name: root
+        flags: [ boot ]
+        size: 100%
+- lvm:
+    name: lvm
+    base: [ root ]
+    pvs:
+        - name: pv
+          base: root
+          options: [ "--force" ]
+    vgs:
+        - name: vglocal01
+          base: [ "pv" ]
+          options: [ "--force" ]
+    lvs:
+        - name: lv_root
+          base: vglocal01
+          extents: 94%VG
+        - name: lv_tmp
+          base: vglocal01
+          extents: 1%VG
+        - name: lv_log
+          base: vglocal01
+          extents: 5%VG
+- mkfs:
+    name: fs_root
+    label: "img-rootfs"
+    base: lv_root
+    type: xfs
+    mount:
+      mount_point: /
+      fstab:
+        options: "defaults"
+        fsck-passno: 1
+- mkfs:
+    name: fs_tmp
+    base: lv_tmp
+    type: xfs
+    mount:
+      mount_point: /tmp
+      fstab:
+        options: "rw,nosuid,nodev,noexec,relatime"
+        fsck-passno: 2
+- mkfs:
+    name: fs_log
+    base: lv_log
+    type: xfs
+    mount:
+      mount_point: /var/log
+      fstab:
+        options: "rw,relatime"
+        fsck-passno: 3
+'''
+
 IMG_NAME="${DISTRO_NAME}-${DIB_RELEASE}-metal-simple"
 
 # Build the Image
@@ -130,7 +214,7 @@ log "Building ${DISTRO_NAME}-${DIB_RELEASE} image at ${OUTPUT_DIR}/${IMG_NAME}"
 disk-image-create $DISTRO_NAME \
   $(test "$DISTRO_NAME" = "centos" && echo epel) \
   $(test "$DISTRO_NAME" = "ubuntu" && echo ubuntu-common) \
-  block-device-gpt \
+  $(test "$LVM" = true && echo block-device-efi-lvm || echo block-device-gpt) \
   disable-nouveau \
   cloud-init-datasources \
   vm \
